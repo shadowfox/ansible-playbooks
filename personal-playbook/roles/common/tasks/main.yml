@@ -1,0 +1,57 @@
+---
+# Common tasks to be applied to all machines
+#
+
+# This is present in some virtual machine images
+- name: Remove cdrom lines from sources.list
+  lineinfile: dest=/etc/apt/sources.list regexp="^deb cdrom" state=absent
+
+- name: Update apt package cache
+  apt: update_cache=yes cache_valid_time=3600
+
+- name: Upgrade packages
+  apt: upgrade=safe
+  #apt: upgrade=full
+
+- name: Unattended upgrades
+  apt: pkg=unattended-upgrades state=installed
+
+- name: Install required and useful packages
+  apt: name={{ item }} state=installed
+  with_items:
+    - build-essential
+    - sudo
+    - vim
+    - git
+    - tmux
+    - htop
+    - iftop
+    - iotop
+    - python-software-properties
+
+- name: Change root password
+  user: name=root password={{ root_password_hash }}
+
+- name: Create user account
+  user: name={{ username }} password={{ user_password_hash }} shell={{ user_shell }} state=present
+
+- name: Add public key for new user account
+  authorized_key: user={{ username }} key="{{ lookup('file', user_pubkey_path) }}"
+
+- name: Ensure new user public key has correct permissions
+  file: path="/home/{{ username }}/.ssh/authorized_keys" state=file mode=0600 owner={{ username }}
+
+# Usernames-only sudoers file
+- name: Remove sudo group line from sudoers file
+  lineinfile: dest=/etc/sudoers regexp="^%sudo" state=absent
+
+- name: Remove admin group line from sudoers file
+  lineinfile: dest=/etc/sudoers regexp="^%admin" state=absent
+  
+- name: Add new user to sudoers file
+  lineinfile: dest=/etc/sudoers regexp="^{{ username }} ALL" line="{{ username }} ALL=(ALL) ALL" state=present
+
+# SSH configuration
+- name: Copy over sshd_config
+  template: src=sshd_config.j2 dest=/etc/ssh/sshd_config
+  notify: restart ssh

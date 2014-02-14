@@ -1,0 +1,10 @@
+---
+# Playbook variables, grouped by role
+
+# common
+ssh_port: "22"
+root_password_hash: ""
+username: "myuser"
+user_password_hash: ""
+user_pubkey_path: "~/.ssh/id_rsa.pub"
+user_shell: "/bin/bash"
