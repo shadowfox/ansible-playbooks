@@ -1,0 +1,23 @@
+---
+# Postfix running in a local-only, send-only configuration
+# using an existing mail server to relay emails
+
+- name: Install postfix
+  apt: name=postfix state=installed
+
+- name: Copy over main.cf
+  template: src=main.cf.j2 dest=/etc/postfix/main.cf owner=root group=root mode=0600
+  notify: restart postfix
+
+- name: Copy over a temporary sasl_passwd
+  template: src=sasl_passwd dest=/etc/postfix/sasl_passwd
+  
+- name: Hash the password if it has not already been done
+  command: postmap hash:/etc/postfix/sasl_passwd creates=/etc/postfix/sasl_passwd.db
+
+- name: Set permissions for sasl_passwd.db
+  file: path=/etc/postfix/sasl_passwd owner=root group=root mode=0600
+  notify: restart postfix
+
+- name: Delete the temporary sasl_passwd
+  file: path=/etc/postfix/sasl_passwd state=absent

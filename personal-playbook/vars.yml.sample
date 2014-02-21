@@ -8,3 +8,10 @@ username: "myuser"
 user_password_hash: ""
 user_pubkey_path: "~/.ssh/id_rsa.pub"
 user_shell: "/bin/bash"
+
+# mail
+# Note: for the username, it is best to replace '@' with '#' 
+postfix_relayhost: "smtp.gmail.com"
+postfix_relayhost_port: "587"
+postfix_relayhost_username: "username#gmail.com"
+postfix_relayhost_password: ""
