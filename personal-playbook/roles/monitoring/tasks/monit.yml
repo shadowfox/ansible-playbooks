@@ -4,3 +4,4 @@
 
 - name: Copy over monitrc
   template: src=monitrc.j2 dest=/etc/monit/monitrc
+  notify: restart monit
