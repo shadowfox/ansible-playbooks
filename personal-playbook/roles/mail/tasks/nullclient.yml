@@ -10,7 +10,7 @@
   notify: restart postfix
 
 - name: Copy over a temporary sasl_passwd
-  template: src=sasl_passwd dest=/etc/postfix/sasl_passwd
+  template: src=sasl_passwd.j2 dest=/etc/postfix/sasl_passwd
   
 - name: Hash the password if it has not already been done
   command: postmap hash:/etc/postfix/sasl_passwd creates=/etc/postfix/sasl_passwd.db

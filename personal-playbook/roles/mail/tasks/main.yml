@@ -1,2 +1,2 @@
 ---
-include: nullclient.yml
+- include: nullclient.yml
