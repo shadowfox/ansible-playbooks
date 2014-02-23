@@ -2,6 +2,7 @@
 # Playbook variables, grouped by role
 
 # common
+domain: ""
 ssh_port: "22"
 root_password_hash: ""
 username: "myuser"
@@ -10,8 +11,17 @@ user_pubkey_path: "~/.ssh/id_rsa.pub"
 user_shell: "/bin/bash"
 
 # mail
-# Note: for the username, it is best to replace '@' with '#' 
+# Note: the fastmail wiki suggests replacing '@' with '#' to avoid authentication errors
+postfix_hostname: ""
 postfix_relayhost: "smtp.gmail.com"
 postfix_relayhost_port: "587"
 postfix_relayhost_username: "username#gmail.com"
 postfix_relayhost_password: ""
+
+# monitoring
+logwatch_email: ""
+logwatch_range: "Yesterday"
+#logwatch_range: "between -7 days and -1 days" (weekly)
+monit_alert_email: ""
+monit_username: "monit"
+monit_password: "monit"
