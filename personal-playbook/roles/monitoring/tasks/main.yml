@@ -1,0 +1,4 @@
+---
+# All monitoring tasks, tagged for convenience
+- include: logwatch.yml tags=logwatch
+- include: monit.yml tags=monit

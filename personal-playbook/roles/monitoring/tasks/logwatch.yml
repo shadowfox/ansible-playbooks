@@ -1,0 +1,6 @@
+---
+- name: Install logwatch
+  apt: name=logwatch state=installed
+
+- name: Copy over logwatch.conf
+  template: src=logwatch.conf.j2 dest=/etc/logwatch/conf/logwatch.conf
