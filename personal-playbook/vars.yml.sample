@@ -25,3 +25,6 @@ logwatch_range: "Yesterday"
 monit_alert_email: ""
 monit_username: "monit"
 monit_password: "monit"
+
+# postgresql
+postgresql_version: "9.3"

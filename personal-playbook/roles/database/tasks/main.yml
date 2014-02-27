@@ -1,0 +1,15 @@
+---
+- name: Add the postgresql repository signing key
+  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
+
+- name: Add the postgresql repository
+  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main' state=present
+
+- name: Install postgresql-{{ postgresql_version }}
+  apt: name=postgresql-{{ postgresql_version }} state=present
+
+- name: Copy across pg_hba.conf
+  copy: src=pg_hba.conf dest=/etc/postgresql/{{ postgresql_version }}/main/pg_hba.conf
+        owner=postgresql group=postgresql mode=644
+        force=yes backup=yes
+  notify: restart postgresql
