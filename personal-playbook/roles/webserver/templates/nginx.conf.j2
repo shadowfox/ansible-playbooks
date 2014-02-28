@@ -1,0 +1,115 @@
+##
+# Main nginx config file
+# Changes from default:
+# - configurable worker_processes and worker_connections
+# - tcp_nopush & tcp_nodelay are on
+# - timeouts are tweaked
+# - a commented open_file_cache is available if needed
+# - explicit mimetype and charset are provided
+##
+
+user www-data;
+
+# At maximum, should be set to the number of CPU cores available
+# to check: cat /proc/cpuinfo | grep processor | wc -l
+worker_processes {{ nginx_worker_processes }};
+
+
+pid /var/run/nginx.pid;
+
+events {
+	worker_connections {{ nginx_worker_connections }};
+	# multi_accept on;
+}
+
+http {
+
+	##
+	# Basic Settings
+	##
+
+	# More efficient data transfer within the system
+	sendfile on;
+  
+	# sendfile must be on for these two to work
+	tcp_nopush on;
+	tcp_nodelay on;
+
+	keepalive_timeout 30;
+
+
+	# Close connection of clients who do not respond
+	reset_timedout_connection on;
+
+	types_hash_max_size 2048;
+	
+	# Server will identify as a versionless Nginx
+	server_tokens off;
+
+	# server_names_hash_bucket_size 64;
+	# server_name_in_redirect off;
+
+	include /etc/nginx/mime.types;
+	default_type text/html;
+	charset UTF-8;
+
+	##
+	# Logging Settings
+	##
+
+	# Log buffering can decrease overhead with many visitors
+	#access_log /var/log/nginx/access.log main buffer=16k;
+	access_log /var/log/nginx/access.log;
+	error_log /var/log/nginx/error.log;
+
+	##
+	# Gzip Settings
+	##
+
+	gzip on;
+	gzip_disable "msie6";
+
+	# gzip_vary on;
+	# gzip_proxied any;
+	# gzip_comp_level 6;
+	# gzip_buffers 16 8k;
+	# gzip_http_version 1.1;
+	# gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+
+	##
+	# Cache frequently requested files descriptors and other info
+	# (http://nginx.org/en/docs/http/ngx_http_core_module.html#open_file_cache)
+	##
+	# Max number of cached items and cache expiry time
+	#open_file_cache max=5000 inactive=1m;
+	# How often to confirm data is valid
+	#open_file_cache_valid 30s;
+	# Minimum number of accesses to prevent removal due to inactivity
+	#open_file_cache_min_uses 2;
+	# Whether or not to cache file lookup errors
+	#open_file_cache_errors on;
+
+	##
+	# nginx-naxsi config
+	##
+	# Uncomment it if you installed nginx-naxsi
+	##
+
+	#include /etc/nginx/naxsi_core.rules;
+
+	##
+	# nginx-passenger config
+	##
+	# Uncomment it if you installed nginx-passenger
+	##
+	
+	#passenger_root /usr;
+	#passenger_ruby /usr/bin/ruby;
+
+	##
+	# Virtual Host Configs
+	##
+
+	include /etc/nginx/conf.d/*.conf;
+	include /etc/nginx/sites-enabled/*;
+}

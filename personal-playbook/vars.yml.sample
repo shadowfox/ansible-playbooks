@@ -28,3 +28,7 @@ monit_password: "monit"
 
 # postgresql
 postgresql_version: "9.3"
+
+# webserver
+nginx_worker_processes: 4
+nginx_worker_connections: 1024
