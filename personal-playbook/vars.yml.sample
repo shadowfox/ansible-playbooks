@@ -32,3 +32,8 @@ postgresql_version: "9.3"
 # webserver
 nginx_worker_processes: 4
 nginx_worker_connections: 1024
+
+# php
+# Whether php should restrict cookies to https only.
+# Ddefaults to 1 if no value provided
+#php_cookie_secure: 1
