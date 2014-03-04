@@ -9,6 +9,17 @@ username: "myuser"
 user_password_hash: ""
 user_pubkey_path: "~/.ssh/id_rsa.pub"
 user_shell: "/bin/bash"
+common_packages:
+  - build-essential
+  - sudo
+  - vim
+  - git
+  - tmux
+  - htop
+  - iftop
+  - iotop
+  - python-software-properties
+
 
 # mail
 # Note: the fastmail wiki suggests replacing '@' with '#' to avoid authentication errors

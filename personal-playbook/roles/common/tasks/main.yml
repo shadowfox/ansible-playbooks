@@ -18,17 +18,8 @@
 
 - name: Install required and useful packages
   apt: name={{ item }} state=installed
-  with_items:
-    - build-essential
-    - sudo
-    - vim
-    - git
-    - tmux
-    - htop
-    - iftop
-    - iotop
-    - python-software-properties
-
+  with_items: common_packages
+  
 - name: Change root password
   user: name=root password={{ root_password_hash }}
 
