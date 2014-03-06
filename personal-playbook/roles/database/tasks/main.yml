@@ -10,6 +10,10 @@
 
 - name: Copy across pg_hba.conf
   copy: src=pg_hba.conf dest=/etc/postgresql/{{ postgresql_version }}/main/pg_hba.conf
-        owner=postgresql group=postgresql mode=644
+        owner=postgres group=postgres mode=644
         force=yes backup=yes
   notify: restart postgresql
+
+# Ansible needs this to use its postgresql modules
+- name: Install python psycopg2 package
+  pip: name=psycopg2 state=present
