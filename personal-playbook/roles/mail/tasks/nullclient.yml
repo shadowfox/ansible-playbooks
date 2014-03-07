@@ -2,6 +2,9 @@
 # Postfix running in a local-only, send-only configuration
 # using an existing mail server to relay emails
 
+- name: Stop sendmail
+  service: name=sendmail state=stopped
+
 - name: Install postfix
   apt: name=postfix state=installed
 
