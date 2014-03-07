@@ -23,6 +23,10 @@
 - name: Change root password
   user: name=root password={{ root_password_hash }}
 
+# The ssh module doesn't seem to create ~/.ssh itself
+- name: Ensure the executing user has an .ssh directory
+  file: path=~{{ ansible_ssh_user }}/.ssh/ state=directory mode=700 owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }}
+
 - name: Create user account
   user: name={{ username }} password={{ user_password_hash }} shell={{ user_shell }} state=present
 
