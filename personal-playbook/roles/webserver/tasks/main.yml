@@ -3,6 +3,12 @@
 - name: Remove apache if it exists
   apt: name=apache* state=absent force=yes purge=yes
 
+- name: Add the nginx repository signing key
+  apt_key: url=http://nginx.org/keys/nginx_signing.key state=present
+
+- name: Add the nginx repository
+  apt_repository: repo='deb http://nginx.org/packages/mainline/debian/ wheezy nginx' state=present
+
 - name: Install nginx
   apt: name=nginx state=installed
 
