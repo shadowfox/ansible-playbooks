@@ -38,5 +38,5 @@ recipient_delimiter = +
 inet_interfaces = loopback-only
 smtp_sasl_auth_enable = yes
 smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
-smtp_sasl_security_options =
+smtp_sasl_security_options = noplaintext, noanonymous
 smtp_tls_security_level = encrypt
