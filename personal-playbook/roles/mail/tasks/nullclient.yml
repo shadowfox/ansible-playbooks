@@ -8,6 +8,9 @@
 - name: Install postfix
   apt: name=postfix state=installed
 
+- name: Install an additional postfix dependency
+  apt: name=libsasl2-modules state=present
+  
 - name: Copy over main.cf
   template: src=main.cf.j2 dest=/etc/postfix/main.cf owner=root group=root mode=0600
   notify: restart postfix
