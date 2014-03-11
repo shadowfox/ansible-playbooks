@@ -6,7 +6,7 @@
   service: name=sendmail state=stopped
 
 - name: Install postfix
-  apt: name=postfix state=installed
+  apt: name=postfix state=present
 
 - name: Install an additional postfix dependency
   apt: name=libsasl2-modules state=present

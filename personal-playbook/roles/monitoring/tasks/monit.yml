@@ -1,6 +1,6 @@
 ---
 - name: Install monit
-  apt: name=monit state=installed
+  apt: name=monit state=present
 
 - name: Copy over monitrc
   template: src=monitrc.j2 dest=/etc/monit/monitrc
