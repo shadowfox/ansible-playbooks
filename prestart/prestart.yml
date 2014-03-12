@@ -1,0 +1,26 @@
+---
+# Prestart playbook
+# Ensures all packages required for ansible are available 
+
+- hosts: "{{ target }}"
+  gather_facts: false
+  remote_user: root
+
+  tasks:
+    # We have to use raw for this (see below)
+    - name: Update package cache
+      raw: apt-get update
+
+    # The package python-simplejson is required by the module subsystem
+    # Might not be instaleld if the host is running Python 2.4 or older
+    - name: Ensure python-simplejson is installed
+      raw: apt-get install -y python-simplejson
+
+    - name: Ensure aptitude is installed
+      command: apt-get install -y aptitude
+
+    - name: Ensure python-apt is installed
+      command: apt-get install -y python-apt
+
+    - name: Ensure python package management is available (pip)
+      command: apt-get install -y libpq-dev python-dev python-pip
