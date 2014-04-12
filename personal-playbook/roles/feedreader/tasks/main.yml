@@ -77,3 +77,7 @@
 
 - name: Copy over config.php
   template: src=config.php.j2 dest="{{ ttrss_location }}/config.php"
+
+- name: Directory should be owned by web user
+  file: path="{{ ttrss_location }}" owner=www-data group=www-data
+        state=directory recurse=yes
