@@ -48,3 +48,19 @@ nginx_worker_connections: 1024
 # Whether php should restrict cookies to https only.
 # Ddefaults to 1 if no value provided
 #php_cookie_secure: 1
+
+# feedreader
+ttrss_repo: 
+ttrss_location:
+# For the version argument for the git module.
+# Should probably be the name of a stable branch  
+ttrss_version:
+
+# The full address of the tt-rss installation, used for some features
+ttrss_url_path: "http://example.org/tt-rss/"
+
+#ttrss_database_host: localhost
+#ttrss_database_port: 5432
+ttrss_database_type: "pgsql"
+ttrss_database: "app_ttrss"
+ttrss_database_username: "ttrss"
