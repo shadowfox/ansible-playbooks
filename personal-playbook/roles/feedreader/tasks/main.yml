@@ -1,0 +1,79 @@
+---
+# A feedreader powered by tt-rss
+
+- name: Copy site config to sites_available
+  template: src=siteconfig.j2 dest="/etc/nginx/sites-available/{{ domain }}" mode=644
+
+- name: Copy over the include file for tt-rss
+  template: src=ttrss.j2  dest="{{ nginx_includes_path }}/ttrss"
+
+- name: Activate site config via symlink
+  file: path="/etc/nginx/sites-enabled/{{ domain }}"
+        src="/etc/nginx/sites-available/{{ domain }}"
+        state=link
+  notify:
+    - restart nginx
+    - restart php5-fpm
+
+- name: Install php-apc
+  apt: name=php-apc state=present
+  notify: restart php5-fpm
+
+- name: Install Postgresql, cURL and GD libraries for PHP
+  apt: name={{ item }} state=present
+  with_items:
+    - php5-pgsql
+    - php5-gd
+    - php5-curl
+  notify: restart php5-fpm
+
+# This is a public project, so there's no harm
+# in just cloning to repo straight into the location
+- name: Clone tt-rss into location
+  git: repo={{ ttrss_repo }} dest="{{ ttrss_location }}"
+       version={{ ttrss_version }} accept_hostkey=True
+
+# The password will be available in ttrss_database_password.stdout
+- name: Generate and store a password for the tt-rss user
+  command: "openssl rand -base64 30"
+  register: ttrss_database_password
+
+- name: Create a database
+  sudo: yes
+  sudo_user: postgres
+  postgresql_db: name="{{ ttrss_database }}"
+
+- name: Create a database user with access to the database
+  sudo: yes
+  sudo_user: postgres
+  postgresql_user: db="{{ ttrss_database }}"
+                   name="{{ ttrss_database_username }}"
+                   password="{{ ttrss_database_password.stdout }}"
+                   priv=ALL  
+
+- name: Populate the database
+  sudo: yes
+  sudo_user: postgres
+  command: "psql -d {{ ttrss_database }} -f {{ ttrss_location }}/schema/ttrss_schema_pgsql.sql"
+
+# We appear to have to do all of these GRANTs manually?
+- name: Grant the user access to all tables
+  sudo: yes
+  sudo_user: postgres
+  postgresql_privs: database="{{ ttrss_database }}" role="{{ ttrss_database_username }}"
+                    type=table objs=ALL_IN_SCHEMA privs=ALL state=present
+
+- name: Grant the user access to all sequences
+  sudo: yes
+  sudo_user: postgres
+  postgresql_privs: database="{{ ttrss_database }}" role="{{ ttrss_database_username }}"
+                    type=sequence objs=ALL_IN_SCHEMA privs=ALL state=present
+
+- name: Grant the user access the single required function
+  sudo: yes
+  sudo_user: postgres
+  postgresql_privs: database="{{ ttrss_database }}" role="{{ ttrss_database_username }}"
+                    type=function obj=substring_for_date(timestamp:int:int) privs=ALL state=present
+
+- name: Copy over config.php
+  template: src=config.php.j2 dest="{{ ttrss_location }}/config.php"
